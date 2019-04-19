@@ -1,0 +1,24 @@
+Options +FollowSymLinks
+IndexIgnore */*
+RewriteEngine on
+RewriteBase /
+
+# Если запрос начинается с /su, то заменяем на /backend/web/
+RewriteCond %{REQUEST_URI} ^/su
+RewriteRule ^su\/?(.*) /backend/web/$1
+ 
+# Добавляем другой запрос /frontend/web/$1
+RewriteCond %{REQUEST_URI} !^/(frontend/web|backend/web|su)
+RewriteRule (.*) /frontend/web/$1
+ 
+# Если frontend запрос
+RewriteCond %{REQUEST_URI} ^/frontend/web
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /frontend/web/index.php
+ 
+# Если backend запрос
+RewriteCond %{REQUEST_URI} ^/backend/web
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /backend/web/index.php
